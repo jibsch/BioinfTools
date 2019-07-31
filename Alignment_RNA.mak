@@ -11,7 +11,7 @@ GTF_MM=~/references/mouse/Mus_musculus.GRCm38.93.gtf
 
 FASTQ := $(wildcard ${DATA_DIR}*R1.fastq.gz)
 
-#Set bam reuirements according to sequencing mode 
+#Set bam requirements according to sequencing mode 
 ifeq ($(mode),se)
 BAM= $(addprefix ${ALIGN_DIR}/,\
        	$(notdir \
@@ -22,6 +22,12 @@ ifeq ($(mode),pe)
 BAM= $(addprefix ${ALIGN_DIR}/,\
 	$(notdir \
 	$(subst _R1.fastq.gz,-PE-starAligned.sortedByCoord.out.bam,$(FASTQ) ) ) )
+endif
+
+#Check UMI Filtering
+ifdef umi
+TMP := $(subst sortedByCoord.out,sortedByCoord.JEMD.out,$(BAM))
+BAM=$(TMP)
 endif
 
 #Set genome annotation and index according to user paramter
@@ -77,6 +83,7 @@ ifndef mode
 else ifndef genome
 	@echo "genome not set. specidy run=hs or run=mm with command for human or mouse alignment."
 else
-	
+	@echo $(TMP)	
+	@echo "----------------------------------------------"
 	featureCounts -a $(ANNO) -o $@ -Q 10 -p -T ${THREADS} -g gene_name $^
 endif
