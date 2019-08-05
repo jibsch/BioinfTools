@@ -15,10 +15,10 @@
 DATA_DIR=../data/
 ALIGN_DIR=../align/
 THREADS=14
-STAR_HS=~/references/human/hg38_STAR_index/
-STAR_MM=~/references/mouse/mm38_STAR_index/
-GTF_HS=~/references/human/Homo_sapiens.GRCh38.91.chr.gtf
-GTF_MM=~/references/mouse/Mus_musculus.GRCm38.93.gtf
+STAR_HS=~jsch0032/references/human/hg38_STAR_index/
+STAR_MM=~jsch0032/references/mouse/mm38_STAR_index/
+GTF_HS=~jsch0032/references/human/Homo_sapiens.GRCh38.91.chr.gtf
+GTF_MM=~jsch0032/references/mouse/Mus_musculus.GRCm38.93.gtf
 
 #ls ../rna-seq/*R1* | sed -e 's/\.\.\/rna-seq\//${ALIGN_DIR}/' -e 's/_R1_001\.fastq\.gz/-starAligned.sortedByCoord.out.bam/'
 
@@ -85,7 +85,7 @@ ${ALIGN_DIR}%-PE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz ${D
 #UMI collapsing
 #To be implemented
 ${ALIGN_DIR}%-starAligned.sortedByCoord.JEMD.out.bam: ${ALIGN_DIR}%-starAligned.sortedByCoord.out.bam
-	~/tools/je/je_1.2/je markdupes INPUT=$^ O=$@ MISMATCHES=1 METRICS_FILE=${@}.metrics REMOVE_DUPLICATES=true
+	~jsch0032/tools/je/je_1.2/je markdupes INPUT=$^ O=$@ MISMATCHES=1 METRICS_FILE=${@}.metrics REMOVE_DUPLICATES=true
 	samtools index $@
 
 
