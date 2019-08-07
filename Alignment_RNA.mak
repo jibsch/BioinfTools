@@ -11,7 +11,7 @@
 #changed in this file if need be.
 
 
-#SHELL=/bin/bash
+SHELL=/bin/bash
 DATA_DIR=../data/
 ALIGN_DIR=../align/
 THREADS=14
@@ -74,12 +74,12 @@ ${DATA_DIR}trimmed/%.gz: ${DATA_DIR}trimmed/%
 
 #Align SE Reads 
 ${ALIGN_DIR}%-SE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz
-	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<)  --outFileNamePrefix ${ALIGN_DIR}$*-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard	
+	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<)  --outFileNamePrefix ${ALIGN_DIR}$*-SE-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard	
 	samtools index $@
 
 #Align PE Reads
 ${ALIGN_DIR}%-PE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz ${DATA_DIR}%_R2.fastq.gz
-	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<) <(zcat $(word 2,$^)) --outFileNamePrefix ${ALIGN_DIR}$*-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard
+	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<) <(zcat $(word 2,$^)) --outFileNamePrefix ${ALIGN_DIR}$*-PE-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard
 	samtools index $@
 
 #UMI collapsing
