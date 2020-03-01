@@ -23,10 +23,10 @@ GTF_HS2=~jsch0032/references/human/Homo_sapiens.GRCh37.87.chr.gtf
 GTF_MM=~jsch0032/references/mouse/Mus_musculus.GRCm38.93.gtf
 
 
-ifdef path
-TMP1 := ${ALIGN_DIR}$(path)/
+ifdef infix 
+TMP1 := ${ALIGN_DIR}$(infix)/
 ALIGN_DIR=$(TMP1)
-TMP2 := ${DATA_DIR}$(path)/
+TMP2 := ${DATA_DIR}$(infix)/
 DATA_DIR=$(TMP2)
 endif
 
