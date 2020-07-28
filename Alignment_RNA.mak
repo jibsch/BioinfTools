@@ -30,8 +30,8 @@ TMP2 := ${DATA_DIR}$(infix)/
 DATA_DIR=$(TMP2)
 endif
 
-FASTQ := $(wildcard ${DATA_DIR}*R1.fastq.gz)
-
+FASTQ := $(wildcard ${DATA_DIR}*R1_001.fastq.gz)
+#FASTQ := $(shell find ${DATA_DIR} -regextype posix-extended -regex -name '*R1[01_]*.fastq.gz')
 #Set bam requirements according to sequencing mode 
 ifeq ($(mode),se)
 BAM= $(addprefix ${ALIGN_DIR}/,\
@@ -42,7 +42,7 @@ endif
 ifeq ($(mode),pe)
 BAM= $(addprefix ${ALIGN_DIR}/,\
 	$(notdir \
-	$(subst _R1.fastq.gz,-PE-starAligned.sortedByCoord.out.bam,$(FASTQ) ) ) )
+	$(subst _R1_001.fastq.gz,-PE-starAligned.sortedByCoord.out.bam,$(FASTQ) ) ) )
 endif
 
 #Check UMI Filtering
@@ -68,6 +68,8 @@ endif
 
 #Usage
 all:  
+	#echo $(BAM)
+	#echo $(FASTQ)
 	echo $(ALIGN_DIR)
 	@echo "Usage: make -f Alignment_RNA.mak <mode=mode> <genome=genome> [options] table"
 	@echo "  where mode = se or pe, genome = hg19, hg38 or mm"
@@ -92,7 +94,7 @@ ${ALIGN_DIR}%-SE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz
 	samtools index $@
 
 #Align PE Reads
-${ALIGN_DIR}%-PE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz ${DATA_DIR}%_R2.fastq.gz
+${ALIGN_DIR}%-PE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1_001.fastq.gz ${DATA_DIR}%_R2_001.fastq.gz
 	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<) <(zcat $(word 2,$^)) --outFileNamePrefix ${ALIGN_DIR}$*-PE-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard
 	samtools index $@
 
@@ -102,9 +104,10 @@ ${ALIGN_DIR}%-SE-starAligned.sortedByCoord.JEMD.out.bam: ${ALIGN_DIR}%-SE-starAl
 	~jsch0032/tools/je/je_1.2/je markdupes INPUT=$^ O=$@ MISMATCHES=1 METRICS_FILE=${@}.metrics REMOVE_DUPLICATES=true
 	samtools index $@
 
+bams: ${BAM}
+	echo "creating bam files"
 
-
-table: ${BAM}
+table%: ${BAM}
 ifndef mode
 	@echo "mode not set. specify mode=se or mode=pe with the command. Run without target for usage."
 else ifndef genome
