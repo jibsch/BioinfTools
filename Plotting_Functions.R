@@ -75,8 +75,10 @@ plotto_marker_plot = function(m, seurat, reduction = "umap", size=0.15) {
 }
 
 plotto_signature_scoring_plot = function(sig, seurat, reduction = "umap", size=0.15) {
-  components = paste(ifelse(reduction=="umap", "UMAP", "PC"), 1:2, sep="_")
-  cnames = paste(ifelse(reduction=="umap", "UMAP", "PC"), 1:2, sep="")
+  # components = paste(ifelse(reduction=="umap", "UMAP", "PC"), 1:2, sep="_")
+  # cnames = paste(ifelse(reduction=="umap", "UMAP", "PC"), 1:2, sep="")
+  components = colnames(Embeddings(seurat, reduction = reduction))[1:2]
+  cnames = gsub("_","",components)
   Embeddings(seurat, reduction = reduction) %>% as_tibble() %>%
     mutate(s = seurat@meta.data[,sig]) %>%
     ggplot(., aes_string(components[1], components[2])) +
