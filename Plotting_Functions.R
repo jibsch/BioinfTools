@@ -52,13 +52,15 @@ plotto_theme_panel<- function(){
 ## Single Cell Plotting Functions
 library(Seurat)
 library(ggplot2)
-plotto_marker_plot = function(m, seurat, size=0.15) {
-  Embeddings(seurat, reduction = "umap") %>% as_tibble() %>%
+plotto_marker_plot = function(m, seurat, reduction = "umap", size=0.15) {
+  Embeddings(seurat, reduction = reduction) %>% as_tibble() %>%
     mutate(g = as.matrix(seurat@assays[[seurat@active.assay]][m,])[1,]) -> pdat
+  components = names(pdat)[1:2]
+  cnames = gsub("_","",components)
 
   ggplot() +
-    geom_point(data = pdat[pdat$g<0,], aes(x=UMAP_1, y=UMAP_2), stroke=stroke, size=size, colour="lightgrey") +
-    geom_point(data = pdat[pdat$g>=0,], aes(x=UMAP_1, y=UMAP_2, color=g),  stroke=stroke, size=size) +
+    geom_point(data = pdat[pdat$g<0,], aes_string(components[1], components[2]), stroke=stroke, size=size, colour="lightgrey") +
+    geom_point(data = pdat[pdat$g>=0,], aes_string(components[1], components[2], color="g"),  stroke=stroke, size=size) +
     #    scale_color_gradientn(colours = rev(brewer.pal(n = 7, name =
     # "RdYlBu"))) +
     scale_color_gradientn(colours = c("lightgrey", rev(brewer.pal(n = 11, name =
@@ -67,7 +69,7 @@ plotto_marker_plot = function(m, seurat, size=0.15) {
     theme(legend.position = "bottom", legend.key.height = unit(0.5,"line"),
           legend.spacing.x = unit(0.2, 'cm'),
           legend.box.margin = margin(t=-0.4, unit = "cm")) +
-    labs(x="UMAP1", y="UMAP2", colour=m) -> p
+    labs(x=cnames[1], y=cnames[2], colour=m) -> p
 
   p
 }
