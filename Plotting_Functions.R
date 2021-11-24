@@ -27,8 +27,8 @@ plotto_theme_panel<- function(){
       #text elements
       plot.title = element_text(             #title
         family = font,            #set font family
-        size = 7,                #set font size
-        # face = 'bold',            #bold typeface
+        size = 10,                #set font size
+         face = 'bold',            #bold typeface
         hjust = 0),               #raise slightly
 
       axis.title = element_text(             #axis titles
