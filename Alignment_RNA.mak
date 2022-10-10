@@ -15,12 +15,12 @@ SHELL=/bin/bash
 DATA_DIR=../data/
 ALIGN_DIR=../align/
 THREADS=14
-STAR_HS=~jsch0032/references/human/hg38_STAR_index/
+STAR_HS=~/projects/references/human/hg38_STAR
 STAR_HS2=~jsch0032/references/human/hg19_STAR_index/
-STAR_MM=~jsch0032/references/mouse/mm38_STAR_index/
-GTF_HS=~jsch0032/references/human/Homo_sapiens.GRCh38.91.chr.gtf
+STAR_MM=/home/jsch/projects/references/mouse/STAR/
+GTF_HS=~/projects/references/human/Homo_sapiens.GRCh38.107.gtf 
 GTF_HS2=~jsch0032/references/human/Homo_sapiens.GRCh37.87.chr.gtf
-GTF_MM=~jsch0032/references/mouse/Mus_musculus.GRCm38.93.gtf
+GTF_MM=/home/jsch/projects/references/mouse/Mus_musculus.GRCm39.105.chr_filtered.gtf
 
 
 ifdef infix 
@@ -36,7 +36,7 @@ FASTQ := $(wildcard ${DATA_DIR}*R1_001.fastq.gz)
 ifeq ($(mode),se)
 BAM= $(addprefix ${ALIGN_DIR}/,\
        	$(notdir \
-       	$(subst _R1.fastq.gz,-SE-starAligned.sortedByCoord.out.bam,$(FASTQ) ) ) )
+       	$(subst _R1_001.fastq.gz,-SE-starAligned.sortedByCoord.out.bam,$(FASTQ) ) ) )
        	#$(subst _R1.fastq.gz,-SE-starAligned.sortedByCoord.JEMD.out.bam,$(FASTQ) ) ) )
 endif
 ifeq ($(mode),pe)
@@ -89,7 +89,7 @@ ${DATA_DIR}trimmed/%.gz: ${DATA_DIR}trimmed/%
 
 
 #Align SE Reads 
-${ALIGN_DIR}%-SE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1.fastq.gz
+${ALIGN_DIR}%-SE-starAligned.sortedByCoord.out.bam: ${DATA_DIR}%_R1_001.fastq.gz
 	STAR --genomeDir $(INDEX) --runThreadN ${THREADS} --readFilesIn <(zcat $<)  --outFileNamePrefix ${ALIGN_DIR}$*-SE-star --outSAMtype BAM SortedByCoordinate --outSAMunmapped Within --outSAMattributes Standard	
 	samtools index $@
 
